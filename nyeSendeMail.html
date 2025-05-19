@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Skjema</title>
+</head>
+<body>
+
+    <h1>Fyll inn skjema her!</h1>
+
+    <form id="mittSkjema" action="https://formsubmit.co/din@email.com" method="POST">
+        <label for="navn">Navn: </label>
+        <input type="text" name="navn" id="navn" placeholder="Jane Doe" required><br>
+
+        <label for="epost">Gmail: </label>
+        <input type="email" name="epost" id="epost" placeholder="din.mail@gmail.com" required><br>
+
+        <label for="adresse">Adresse: </label>
+        <input type="text" name="adresse" id="adresse" placeholder="Gate vei 2B" required><br>
+
+        <label for="land">Land: </label>
+        <select name="land" id="land" required></select><br>
+
+        <label for="tlf">Tlf nr: </label>
+        <input type="number" name="tlf" id="tlf" placeholder="12345678" required><br>
+
+        <button type="submit">Send!</button>
+    </form>
+
+    <p>Kvittering:</p>
+    <p id="resultat"></p>
+
+    <script src="land.js"></script>
+
+    <script>
+        let navnEl = document.querySelector("#navn")
+        let epostEl = document.querySelector("#epost")
+        let adresseEl = document.querySelector("#adresse")
+        let landEl = document.querySelector("#land")
+        let tlfEl = document.querySelector("#tlf")
+        let resultatEl = document.querySelector("#resultat")
+
+        let skjema = document.querySelector("#mittSkjema")
+
+        // Fyll inn land-valgene
+        for (let j in land) {
+            let tekst = land[j].unicode
+            let hexArray = tekst.split(" ")
+            let bilde = ""
+            for (let i of hexArray) {
+                let hex = i.replace("U+", "")
+                bilde += `&#x${hex}`
+            }
+
+            let landValg = document.createElement("option")
+            landValg.innerHTML = `${bilde} ${land[j].dial_code}`
+            landValg.value = land[j].dial_code
+            landEl.appendChild(landValg)
+        }
+
+        // Skjemavalidering og visning av kvittering
+        skjema.addEventListener("submit", function (event) {
+            if (!tlfEl.checkValidity() || !epostEl.checkValidity()) {
+                event.preventDefault()
+                return
+            }
+
+            // Vis kvittering
+            resultatEl.innerHTML = `
+                navn: ${navnEl.value}<br>
+                gmail: ${epostEl.value}<br>
+                adresse: ${adresseEl.value}<br>
+                tlf nr: ${landEl.value} ${tlfEl.value}<br>
+            `
+            alert(`Takk for innsendt skjema, ${navnEl.value}!`)
+            // Ikke bruk event.preventDefault(), la skjemaet sendes
+        })
+    </script>
+
+</body>
+</html>
